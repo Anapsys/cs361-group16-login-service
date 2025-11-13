@@ -28,7 +28,10 @@ fetch("/auth", {
 });
 ```
 
-### Recieving Data
+### Receiving Data
+
+Receiving data is done as a result of one of the HTTP requests. The following explanations
+are based on the request paths:
 
 GET Requests:
 - `/`: Sends back an HTML page with the login status of the user.
@@ -37,12 +40,12 @@ GET Requests:
 index page. No recieve body.
 
 POST Requests:
-- `/reset-database`: Redirects the user to the index page, no recieve body.
+- `/reset-database`: Redirects the user to the index page, no receive body.
 - `/auth`: Sets the user's login cookies to their proper values, and redirects 
 the user to the index page. No body sent on success; on failure an error message
 is sent in the body.
 
-#### Example Recieve
+#### Example Receive
 
 ```
 fetch("/login", {<request headers>}).then(function(response){
