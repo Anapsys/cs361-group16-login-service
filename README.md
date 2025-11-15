@@ -72,4 +72,4 @@ GET Requests:
 
 ### UML Sequence Diagram
 
-<img src="umlSequence.jpg" alt="UML sequence diagram">
+<img src="./static/umlSequence.jpg" alt="UML sequence diagram">
