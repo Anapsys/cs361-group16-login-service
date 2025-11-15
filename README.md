@@ -1,12 +1,3 @@
-This is the login verification service repo for sprint 2.
-
-Communication contract:
-    To REQUEST:
-        NYI
-    To RECEIVE:
-        NYI
-
-![UML](./static/UML.png)
 # Communication Contract
 
 ### Requesting Data
@@ -14,20 +5,13 @@ Communication contract:
 Requesting data is done through an HTTP request. The path of the request is used
 to specify an action with the request:
 
-GET Requests:
-- `/`: No request body, session information (cookies) are read.
-- `/login`: No request body, only the path is required.
-- `/logout`: No request body, session information (cookies) are modified.
-
 POST Requests:
-- `/reset-database`: No request body, only the path is required.
-- `/auth`: Body must be a JSON object with a username and password field. Session
-information (cookies) are modified.
+- `/auth`: Body must be a JSON object with a "username" and "password" field.
 
 #### Example Request
 
 ```
-fetch("/auth", {
+await fetch("http://localhost:3001/auth", {
     method: "POST",
     body: JSON.stringify({
        username: <username>,
@@ -39,32 +23,52 @@ fetch("/auth", {
 
 ### Receiving Data
 
-Receiving data is done as a result of one of the HTTP requests. The following explanations
-are based on the request paths:
-
-GET Requests:
-- `/`: Sends back an HTML page with the login status of the user.
-- `/login`: Sends a login page for the user to insert their login information.
-- `/logout`: Destroys the user's login cookies, and redirects the user to the 
-index page. No recieve body.
-
-POST Requests:
-- `/reset-database`: Redirects the user to the index page, no receive body.
-- `/auth`: Sets the user's login cookies to their proper values, and redirects 
-the user to the index page. No body sent on success; on failure an error message
-is sent in the body.
+The server will send back a JSON object containing 
+```
+"userInfo" : [Object], //'undefined' on fail; otherwise username, firstname, lastname, email
+"userID": integer, //-1 on fail, otherwise 0-n
+"message": string
+```
 
 #### Example Receive
 
 ```
-fetch("/login", {<request headers>}).then(function(response){
-    if (!response.ok){
-        console.log("Request failed");
-    }
-    // A seccessful recieve will render a page, or redirect to render a page,
-    // and the only response bodies with usable data are fails.
-});
+await fetch('http://localhost:3001/auth',
+    {
+        method: 'POST',
+        body: JSON.stringify({
+            username: _username,
+            password: _password
+        }),
+        headers: {
+            'Content-type':
+                'application/json; charset=UTF-8',
+        },
+    })
+    .then(
+        (response) => {
+            const loginResult = response.json();
+            console.log(json);
+            if (loginResult.userID == -1) {
+                console.info("Login failed!")
+                console.error(loginResult.message)
+            }
+            else {
+                request.session.loggedin = true;
+                request.session.user = [loginResult.userInfo];
+                request.session.username = loginResult.userInfo.username;
+                console.info("Login success! Welcome "+loginResult.userInfo.username);
+            }
+        }
+    )
 ```
+
+### Debug/direct access routes
+GET Requests:
+- `/`: No request body, session information (cookies) are read out to the console.
+- `/login`: Displays a test page with a login form that will call /auth when submitted.
+- `/logout`: No request body, session information (cookies) are modified.
+- `/reset-database`: Resets the database using the defined stored procedure.
 
 ### UML Sequence Diagram
 
