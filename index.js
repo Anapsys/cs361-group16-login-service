@@ -47,11 +47,17 @@ app.use(session({
 app.use(function (req, res, next) {
     res.locals.session = req.session;
     //user = req.session.user;
+    console.info(""+getCurrentTime())
     console.info("Middleware session: "+req.session.username)
     next();
 });
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+function getCurrentTime() {
+    let now = new Date();
+    return (`${now.getMonth()+1}-${now.getDate()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`)
+}
 
 //
 // route service
